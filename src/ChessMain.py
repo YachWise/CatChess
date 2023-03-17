@@ -5,7 +5,7 @@ from src import ChessEngine
 
 pg.init()
 
-WIDTH = HEIGHT = 512
+WIDTH = HEIGHT = 800
 DIMENSION = 8  # 8x8
 SQ_SIZE = HEIGHT // DIMENSION
 MAX_FPS = 15
@@ -30,7 +30,7 @@ def main():
     load_images()
     running = True
     square_selected = ()  # start with empty square selected
-    player_choice = [(), ()]  # the users start piece location, end piece location
+    player_choice = []  # the users start piece location, end piece location
 
     #  everything in this while loop is while the engine is running
     while running:
@@ -53,7 +53,12 @@ def main():
 
                 # user has selected max choices, starting piece and move location
                 if len(player_choice) == 2:
-                    pass
+                    move = ChessEngine.Move(player_choice[0], player_choice[1], gamestate.board)
+                    print(move.get_chess_notation())
+                    gamestate.make_move(move)
+                    square_selected = ()
+                    player_choice = []
+
         draw_gamestate(screen, gamestate)
         clock.tick(MAX_FPS)
         pg.display.flip()
