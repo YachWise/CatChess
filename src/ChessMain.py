@@ -26,7 +26,8 @@ def main():
     screen.fill(pg.Color('white'))
     pg.display.set_caption("Cat Chess @YachWise --v2")
     gamestate = ChessEngine.GameState()
-
+    valid_moves = gamestate.get_valid_moves()
+    move_made = False
     load_images()
     running = True
     square_selected = ()  # start with empty square selected
@@ -55,9 +56,21 @@ def main():
                 if len(player_choice) == 2:
                     move = ChessEngine.Move(player_choice[0], player_choice[1], gamestate.board)
                     print(move.get_chess_notation())
-                    gamestate.make_move(move)
+                    if move in valid_moves:
+                        gamestate.make_move(move)
+                        move_made = True
                     square_selected = ()
                     player_choice = []
+            # check if user presses a key
+            elif event.type == pg.KEYDOWN:
+                # if it's a z press, undo the move
+                if event.key == pg.K_z:
+                    gamestate.undo_move()
+                    move_made = True
+
+        if move_made:
+            valid_moves = gamestate.get_valid_moves()
+            move_made = False
 
         draw_gamestate(screen, gamestate)
         clock.tick(MAX_FPS)

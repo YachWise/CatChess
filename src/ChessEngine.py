@@ -31,6 +31,54 @@ class GameState:
         self.moveLog.append(move)
         self.whiteToMove = not self.whiteToMove
 
+    def undo_move(self):
+        if len(self.moveLog) != 0:
+            move = self.moveLog.pop()
+            self.board[move.startRow][move.startColumn] = move.movingPiece
+            self.board[move.endRow][move.endColumn] = move.endPiece
+            self.whiteToMove = not self.whiteToMove
+
+    def get_valid_moves(self):
+        return self.get_all_possible_moves()
+
+    def get_pawn_moves(self, row, column, moves):
+        pass
+
+    def get_rook_moves(self, row, column, moves):
+        pass
+
+    def get_queen_moves(self, row, column, moves):
+        pass
+
+    def get_king_moves(self, row, column, moves):
+        pass
+
+    def get_bishop_moves(self, row, column, moves):
+        pass
+
+    def get_knight_moves(self, row, column, moves):
+        pass
+
+    def get_all_possible_moves(self):
+        moves = []
+        for rows in range(len(self.board)):
+            for columns in range(len(self.board[rows])):
+                turn = self.board[rows][columns][0]
+                if (turn == 'w' and self.whiteToMove) and (turn == 'b' and not self.whiteToMove):
+                    piece = self.board[rows][columns][1]
+                    if piece == 'P':
+                        self.get_pawn_moves(rows, columns, moves)
+                    elif piece == 'R':
+                        self.get_rook_moves(rows, columns, moves)
+                    elif piece == 'B':
+                        self.get_bishop_moves(rows, columns, moves)
+                    elif piece == 'Q':
+                        self.get_queen_moves(rows, columns, moves)
+                    elif piece == 'K':
+                        self.get_king_moves(rows, columns, moves)
+                    elif piece == 'N':
+                        self.get_knight_moves(rows, columns, moves)
+
 
 class Move:
     ranksToRows = {"1": 7, "2": 6, "3": 5, "4": 4, "5": 3, "6": 2, "7": 1, "8": 0}
@@ -47,6 +95,12 @@ class Move:
 
         self.movingPiece = board[self.startRow][self.startColumn]
         self.endPiece = board[self.endRow][self.endColumn]
+        self.move_id = self.startRow * 1000 + self.startColumn * 100 + self.endRow * 10 + self.endColumn
+
+    def __eq__(self, other):
+        if isinstance(other, Move):
+            return self.move_id == other.move_id
+        return False
 
     def get_chess_notation(self):
         return self.get_rank_file(self.startRow, self.startColumn) + self.get_rank_file(self.endRow, self.endColumn)
