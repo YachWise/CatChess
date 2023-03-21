@@ -42,8 +42,10 @@ class GameState:
         return self.get_all_possible_moves()
 
     def get_pawn_moves(self, row, column, moves):
-        pass
-
+        if self.whiteToMove:
+            if self.board[row - 1][column] == "--":
+                move_to_append = Move((row, column), (row-1, column), self.board)
+                moves.append(move_to_append)
     def get_rook_moves(self, row, column, moves):
         pass
 
